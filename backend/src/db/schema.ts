@@ -20,7 +20,9 @@ export const user = pgTable("users", {
     password: varchar({ length: 255 }).notNull(),
     role: roleEnum("role").default("buyer"),
     createdAt: timestamp("created_at").defaultNow()
-});
+},(table)=>[
+    index("email_idx").on(table.email)
+]);
 
 
 export const property = pgTable("properties", {
