@@ -1,5 +1,6 @@
 import { CreateAccount } from "../components/CreateAccount"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
+import { SignIn } from "../components/SignIn"
 
 export const Home = () => {
     return (
@@ -14,7 +15,7 @@ export const Home = () => {
                         <CreateAccount/>
                     </TabsContent>
                     <TabsContent value="sign_in">
-                        Change your password here.
+                        <SignIn/>
                     </TabsContent>
                 </Tabs>
             </main>
