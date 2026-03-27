@@ -1,17 +1,24 @@
-import { ModeToggle } from "./components/mode-toggle"
-import { Button } from "./components/ui/button"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { ContextProviedr } from "./provider/ContextProvider"
+import { Home } from "./pages/Home"
+import { Dashboard } from "./pages/Dashboard"
 
-function App() {
+export const App = () => {
   return (
     <ContextProviedr>
-      <div className='flex flex-col items-center justify-center w-full min-h-screen'>
-        <p className="bg-black text-white p-4 rounded-xl">Hello world</p>
-        <Button>Click me</Button>
-        <ModeToggle/>
-      </div>
+      <BrowserRouter>
+        <Routes>
+
+          {/* <Route element={<PublicRoute />}> */}
+            <Route path="/" element={<Home />} />
+          {/* </Route> */}
+
+          {/* <Route element={<ProtectedRoute />}> */}
+            <Route path="/dashboard" element={<Dashboard />} />
+          {/* </Route> */}
+
+        </Routes>
+      </BrowserRouter>
     </ContextProviedr>
   )
 }
-
-export default App
