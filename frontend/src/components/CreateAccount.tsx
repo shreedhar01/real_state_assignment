@@ -1,3 +1,4 @@
+import toast from "react-hot-toast"
 import { Button } from "../components/ui/button"
 import {
     Field,
@@ -8,10 +9,11 @@ import {
     FieldSet,
 } from "../components/ui/field"
 import { Input } from "../components/ui/input"
-// import { useSignup } from "@/lib/api/hooks/auth"
+import { useRegisterUser } from "../lib/api/hooks/auth"
 import { createAccountSchema } from "../schema/auth.schema"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState, type ChangeEventHandler, type SubmitEventHandler } from "react"
+import axios from "axios"
 
 
 export const CreateAccount = () => {
@@ -23,7 +25,7 @@ export const CreateAccount = () => {
     const [viewConfirmPass, setViewConfirmPass] = useState(false)
     const [passMatch, setPassMatch] = useState(true)
     const [errors, setErrors] = useState<Map<string, string>>(new Map())
-    // const signUpMutation = useSignup();
+    const signUpMutation = useRegisterUser();
 
     const handleConfirmPassword: ChangeEventHandler<HTMLInputElement> = (e) => {
         e.preventDefault()
@@ -46,14 +48,29 @@ export const CreateAccount = () => {
             setErrors(newError)
             return
         }
-        // await signUpMutation.mutate(validData.data, {
-        //     onSuccess: () => {
-        //         setName("")
-        //         setEmail("")
-        //         setPassword("")
-        //         setConfirmPassword("")
-        //     }
-        // })
+        toast.promise(
+            signUpMutation.mutateAsync(validData.data),
+            {
+                loading: 'Creating your account...',
+                success: () => {
+                    setName("")
+                    setEmail("")
+                    setPassword("")
+                    setConfirmPassword("")
+                    return <b>Account created!</b>
+                },
+                error: (error) => {
+                    let message: string;
+                    if (axios.isAxiosError(error)) {
+                        console.log("eeror ::", error.response)
+                        message = error.response?.data?.message ?? "Something went wrong"
+                    } else {
+                        message = "Unexpected error occurred"
+                    }
+                    return <b>{message}</b>
+                },
+            }
+        )
     }
 
     return (
@@ -90,12 +107,12 @@ export const CreateAccount = () => {
                                 {errors.has("email") ? <FieldError>{errors.get("email")}</FieldError> : ""}
                             </Field>
                             <Field>
-                                <FieldLabel htmlFor="checkout-7j9-card-number-uw1">
+                                <FieldLabel htmlFor="checkout-7j9-card-number-uw">
                                     Password
                                 </FieldLabel>
                                 <div className="flex gap-2 w-full justify-center">
                                     <Input
-                                        id="checkout-7j9-card-number-uw1"
+                                        id="checkout-7j9-card-number-uw"
                                         type={`${viewPass ? "password" : "text"}`}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -111,12 +128,12 @@ export const CreateAccount = () => {
                                 {errors.has("password") ? <FieldError>{errors.get("password")}</FieldError> : ""}
                             </Field>
                             <Field>
-                                <FieldLabel htmlFor="checkout-7j9-card-number-uw1">
+                                <FieldLabel htmlFor="checkout-7j9-card-number">
                                     Confirm Password
                                 </FieldLabel>
                                 <div className="flex gap-2 w-full justify-center">
                                     <Input
-                                        id="checkout-7j9-card-number-uw1"
+                                        id="checkout-7j9-card-number"
                                         type={`${viewConfirmPass ? "password" : "text"}`}
                                         value={confirmPassword}
                                         onChange={handleConfirmPassword}
