@@ -3,8 +3,19 @@ import { env } from "./config/env.js"
 import authRouter from "./api_v1/route/auth.route.js"
 import type { ApiError } from "./utils/apiError.js"
 import cookieParser from "cookie-parser"
+import cors from "cors"
 
 const app = express()
+
+const allowedOrigins = [
+    "http://localhost:5173"
+];
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}))
+
 app.use(express.json())
 app.use(cookieParser())
 
