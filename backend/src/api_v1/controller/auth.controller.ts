@@ -56,9 +56,19 @@ export const signInUserController = asyncHandler(async (req: Request, res: Respo
     }
 
     return res
-        .cookie("auth", user.isJwtSign, option)
         .status(200)
+        .cookie("auth", user.isJwtSign, option)
         .json(
             new ApiResponse(200, [user.signInUser], "user register successfully")
+        )
+})
+
+
+export const logOutUserController = asyncHandler(async (_: Request, res: Response) => {
+    return res
+        .status(200)
+        .clearCookie("auth")
+        .json(
+            new ApiResponse(200, [], "Logout successfully")
         )
 })
