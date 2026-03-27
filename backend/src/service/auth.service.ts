@@ -60,7 +60,7 @@ export const signInUserService = async (data: SignInUser) => {
         throw new ApiError(400, "Incorrect password")
     }
 
-    const { password, createdAt, ...userData } = isUserExist
+    const { email, password, createdAt, ...userData } = isUserExist
 
     const isJwtSign = await jwtSign({
         ...userData,
