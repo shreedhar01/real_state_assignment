@@ -3,7 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
 import { ApiError } from "../../utils/apiError.js";
 import { registerUserSchema, signInUserSchema } from "../../schema/auth.schema.js";
-import { registerUserService, signInUserService } from "../../service/auth.service.js";
+import { registerUserService, signInUserService, verifyMeService } from "../../service/auth.service.js";
 import { env } from "../../config/env.js";
 
 export const registerUserController = asyncHandler(async (req: Request, res: Response) => {
@@ -71,4 +71,12 @@ export const logOutUserController = asyncHandler(async (_: Request, res: Respons
         .json(
             new ApiResponse(200, [], "Logout successfully")
         )
+})
+
+
+export const verifyMeController = asyncHandler(async (req: Request, res: Response) => {
+    const userData = await verifyMeService(req.user!.id)
+    return res.status(200).json(
+        new ApiResponse(200, [userData], "Yeha it's me")
+    )
 })

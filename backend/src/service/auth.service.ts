@@ -71,3 +71,20 @@ export const signInUserService = async (data: SignInUser) => {
         signInUser: userData
     }
 }
+
+export const verifyMeService = async (userId: number) => {
+    const [isUserExist] = await db
+        .select({
+            id: user.id,
+            name: user.name,
+            role: user.role
+        })
+        .from(user)
+        .where(
+            eq(user.id, userId)
+        )
+    if(!isUserExist){
+        throw new ApiError(404,'User not found')
+    }
+    return isUserExist
+}
