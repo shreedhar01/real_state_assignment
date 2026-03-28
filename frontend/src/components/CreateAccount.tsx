@@ -14,6 +14,7 @@ import { createAccountSchema } from "../schema/auth.schema"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState, type ChangeEventHandler, type SubmitEventHandler } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 
 export const CreateAccount = () => {
@@ -26,6 +27,7 @@ export const CreateAccount = () => {
     const [passMatch, setPassMatch] = useState(true)
     const [errors, setErrors] = useState<Map<string, string>>(new Map())
     const signUpMutation = useRegisterUser();
+    const navigate = useNavigate()
 
     const handleConfirmPassword: ChangeEventHandler<HTMLInputElement> = (e) => {
         e.preventDefault()
@@ -57,6 +59,7 @@ export const CreateAccount = () => {
                     setEmail("")
                     setPassword("")
                     setConfirmPassword("")
+                    navigate("/dashboard")
                     return <b>Account created!</b>
                 },
                 error: (error) => {

@@ -14,12 +14,14 @@ import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState, type SubmitEventHandler } from "react"
 import toast from "react-hot-toast"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [viewPass, setViewPass] = useState(false)
     const [errors, setErrors] = useState<Map<string, string>>(new Map())
+    const navigate = useNavigate()
 
     const signInMutation = useSignInUser()
 
@@ -39,6 +41,7 @@ export const SignIn = () => {
                 success: () => {
                     setEmail("")
                     setPassword("")
+                    navigate("/dashboard")
                     return <b>Signin success!</b>
                 },
                 error: (error) => {
