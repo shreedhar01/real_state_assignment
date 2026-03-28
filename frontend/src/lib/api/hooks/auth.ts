@@ -1,16 +1,22 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { CreateAccount, SignIn } from "../../../schema/auth.schema"
 import { api } from "../axios"
 import axios from "axios"
 
 export function useRegisterUser() {
+    const queryClient = useQueryClient()
+
     return useMutation({
-        mutationKey: ["register_user"],
+        mutationKey: ["user:register"],
         mutationFn: async (data: CreateAccount) => {
             const response = await api.post("/register", data)
 
-            console.log(response.data.data[0])
+            // console.log(response.data.data[0])
             return response.data.data[0]
+        },
+        onSuccess: (data) => {
+            // console.log("data :: ",data)
+            queryClient.setQueryData(["user:verify"], data)
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
@@ -25,13 +31,19 @@ export function useRegisterUser() {
 }
 
 export function useSignInUser() {
+    const queryClient = useQueryClient()
+
     return useMutation({
-        mutationKey: ["register_user"],
+        mutationKey: ["user:signin"],
         mutationFn: async (data: SignIn) => {
             const response = await api.post("/signin", data)
 
-            console.log(response.data.data[0])
+            // console.log(response.data.data[0])
             return response.data.data[0]
+        },
+        onSuccess: (data) => {
+            // console.log("data :: ",data)
+            queryClient.setQueryData(["user:verify"], data)
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
@@ -45,13 +57,14 @@ export function useSignInUser() {
     })
 }
 
-export function useVerifyMe(){
+export function useVerifyMe() {
     return useQuery({
-        queryKey:["user:verify"],
-        queryFn:async()=>{
+        queryKey: ["user:verify"],
+        queryFn: async () => {
             const response = await api.get("/me")
-            console.log("response data data :: ",response.data.data)
+            // console.log("response data data :: ", response.data.data[0])
             return response.data.data
-        }
+        },
+        retry: false
     })
 }
