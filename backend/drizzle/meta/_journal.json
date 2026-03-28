@@ -15,6 +15,13 @@
       "when": 1774597826124,
       "tag": "0001_perpetual_fantastic_four",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774706817523,
+      "tag": "0002_lively_trauma",
+      "breakpoints": true
     }
   ]
 }

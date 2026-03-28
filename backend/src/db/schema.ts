@@ -30,7 +30,9 @@ export const property = pgTable("properties", {
     title: varchar({ length: 255 }).notNull(),
     description: text().notNull(),
     price: numeric().notNull(),
-    location: varchar({ length: 255 }).notNull(),
+    area: varchar({ length: 255 }).notNull(),
+    city: varchar({ length: 255 }).notNull(),
+    province: varchar({ length: 255 }).notNull(),
     createdAt: timestamp("created_at").defaultNow()
 })
 
