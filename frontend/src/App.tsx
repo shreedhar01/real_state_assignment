@@ -9,8 +9,8 @@ import { Spinner } from "./components/ui/spinner"
 export const App = () => {
   return (
     <ContextProviedr>
-      <Header />
       <BrowserRouter>
+          <Header />
         <Routes>
 
           <Route element={<PublicRoute />}>

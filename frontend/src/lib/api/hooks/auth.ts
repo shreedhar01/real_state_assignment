@@ -63,8 +63,23 @@ export function useVerifyMe() {
         queryFn: async () => {
             const response = await api.get("/me")
             // console.log("response data data :: ", response.data.data[0])
-            return response.data.data
+            return response.data.data[0]
         },
-        retry: false
+        retry: false,
+        staleTime: Infinity
+    })
+}
+
+export function useLogOut() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["user:logout"],
+        mutationFn: async () => {
+            await api.post("/logout")
+        },
+        onSuccess: () => {
+            queryClient.setQueryData(["user:verify"], null)
+        }
     })
 }
