@@ -32,7 +32,7 @@ export const Header = () => {
                 <div className={`${data ? "flex gap-2" : ""}`}>
                     <ModeToggle />
                     {data && (
-                        <Button onClick={handleLogOut}>
+                        <Button variant="outline" onClick={handleLogOut}>
                             <LogOutIcon />
                         </Button>
                     )}
