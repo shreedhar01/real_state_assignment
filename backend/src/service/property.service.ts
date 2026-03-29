@@ -52,7 +52,24 @@ export const getAllPropertyService = async (page: number, limit: number, userId:
 }
 
 export const addFavouritePropertyService = async (propertyId: number, userId: number) => {
-    // console.log(`userId : ${userId}, propertyId : ${propertyId}`)
+    const [isFavourite] = await db
+        .update(favourite)
+        .set({
+            status: true
+        })
+        .where(and(
+            eq(favourite.userId, userId),
+            eq(favourite.propertyId, propertyId)
+        ))
+        .returning({
+            id: favourite.id,
+            property_id: favourite.propertyId,
+            user_id: favourite.userId,
+            status: favourite.status
+        })
+    if (isFavourite) {
+        return isFavourite
+    }
     const [favAdded] = await db
         .insert(favourite)
         .values({
