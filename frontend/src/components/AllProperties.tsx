@@ -1,4 +1,4 @@
-import { EllipsisIcon, HeartIcon } from "lucide-react"
+import { EllipsisIcon, FilePenLineIcon, HeartIcon, Trash2Icon } from "lucide-react"
 import { useIsMobile } from "../utils/deviceWidth"
 import { Button } from "./ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
@@ -9,8 +9,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import { useGetAllProperties } from "../lib/api/hooks/properties"
+import { useAddFavourite, useGetAllProperties } from "../lib/api/hooks/properties"
 import { useEffect, useRef, useState } from "react"
+import toast from "react-hot-toast"
 
 export const AllProperties = () => {
     const [scrollHeightBeforeFetch, setScrollHeightBeforeFetch] = useState<number | null>(null)
@@ -53,6 +54,18 @@ export const AllProperties = () => {
 
     const allProperties = propData?.pages.flatMap(page => page.data) ?? []
 
+    const addFavouriteMutationn = useAddFavourite()
+    const handleAddFavourite = async (id: number) => {
+        toast.promise(
+            addFavouriteMutationn.mutateAsync(id),
+            {
+                loading: <b>Loading...</b>,
+                success: <b>Added to favourite</b>,
+                error: <b>Unable to add</b>
+            }
+        )
+    }
+
     return (
         <div
             ref={scrollContainerRef}
@@ -86,25 +99,48 @@ export const AllProperties = () => {
                                 </TableCell>
                             )}
                             <TableCell className="align-top text-center w-12">
-                                {v.fav ? (
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button title="More" variant="outline" size="icon">
-                                                <EllipsisIcon className="w-4 h-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent side="left">
-                                            <DropdownMenuGroup>
-                                                <DropdownMenuItem>Remove</DropdownMenuItem>
-                                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                                            </DropdownMenuGroup>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                ) : (
-                                    <Button title="Add" variant="outline" size="icon">
-                                        <HeartIcon className="w-4 h-4" />
-                                    </Button>
-                                )}
+                                {v.fav ? v.fav.status === true ?
+                                    (
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button title="More" variant="outline" size="icon">
+                                                    <EllipsisIcon className="w-4 h-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent side="left" >
+                                                <DropdownMenuGroup>
+                                                    <DropdownMenuItem className="flex items-center gap-x-2 hover:bg-red-500">
+                                                        <Trash2Icon />
+                                                        Remove
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem className="flex items-center gap-x-2">
+                                                        <FilePenLineIcon />
+                                                        Edit
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuGroup>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    ) :
+                                    (
+                                        <Button
+                                            title="Add"
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => handleAddFavourite(v.id)}
+                                        >
+                                            <HeartIcon className="w-4 h-4 " />
+                                        </Button>
+                                    )
+                                    : (
+                                        <Button
+                                            title="Add"
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => handleAddFavourite(v.id)}
+                                        >
+                                            <HeartIcon className="w-4 h-4" />
+                                        </Button>
+                                    )}
                             </TableCell>
                         </TableRow>
                     ))}

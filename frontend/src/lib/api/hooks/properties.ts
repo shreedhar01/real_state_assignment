@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query"
 import { api } from "../axios"
 import type { PropertyResponse } from "../../../schema/property.types"
 
@@ -16,5 +16,31 @@ export function useGetAllProperties() {
             return pagination.hasNext ? pagination.page + 1 : undefined
         },
         initialPageParam: 1
+    })
+}
+
+export function useAddFavourite() {
+    const queryClient = useQueryClient()
+    
+    return useMutation({
+        mutationKey: ["property:add_favourite"],
+        mutationFn: async (id: number) => {
+            const response = await api.post("/property/fav", { id })
+            return response.data.data[0]
+        },
+        onSuccess: (data, id) => {
+            queryClient.setQueryData<InfiniteData<PropertyResponse>>(['properties:get_all'], (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    pages: old.pages.map(page => ({
+                        ...page,
+                        data: page.data.map(val =>
+                            val.id === id ? ({ ...val, fav: data }) : val
+                        )
+                    }))
+                }
+            })
+        }
     })
 }

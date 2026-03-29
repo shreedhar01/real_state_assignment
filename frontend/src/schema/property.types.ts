@@ -1,7 +1,10 @@
+import z from "zod";
+
 export type Favorite = {
     id: number;
     property_id: number;
     user_id: number;
+    status: boolean
 }
 
 export type Property = {
@@ -28,3 +31,12 @@ export type PropertyResponse = {
     data: Property[];
     pagination: Pagination;
 }
+
+
+export const editFavouritePropertySchema = z.object({
+    id: z.number(),
+    title: z.string().min(3).max(255),
+    price: z.number(),
+    description: z.string()
+})
+export type EditFavouriteProperty = z.infer<typeof editFavouritePropertySchema>
