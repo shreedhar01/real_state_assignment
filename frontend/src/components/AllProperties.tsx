@@ -10,9 +10,12 @@ import {
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
 import { useGetAllProperties } from "../lib/api/hooks/properties"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export const AllProperties = () => {
+    const [scrollHeightBeforeFetch, setScrollHeightBeforeFetch] = useState<number | null>(null)
+    const [scrollTopBeforeFetch, setscrollTopBeforeFetch] = useState<number | null>(null)
+
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const contentBorder = useRef<HTMLDivElement>(null)
     const isMobile = useIsMobile()
@@ -24,9 +27,6 @@ export const AllProperties = () => {
         isFetchingNextPage: propIsFetchingNextPage,
     } = useGetAllProperties()
 
-    const isFetchingRef = useRef(false)
-    const scrollHeightBeforeFetch = useRef<number | null>(null)
-    const scrollTopBeforeFetch = useRef<number | null>(null)
 
     useEffect(() => {
         const container = scrollContainerRef.current
@@ -34,28 +34,15 @@ export const AllProperties = () => {
 
         const observer = new IntersectionObserver((entries) => {
             if (
-                entries[0].isIntersecting &&
-                propHasNextPage &&
-                !propIsFetchingNextPage &&
-                !isFetchingRef.current
+                entries[0].isIntersecting && propHasNextPage && !propIsFetchingNextPage
             ) {
-                scrollHeightBeforeFetch.current = container.scrollHeight
-                scrollTopBeforeFetch.current = container.scrollTop
-                isFetchingRef.current = true
+                setScrollHeightBeforeFetch(container.scrollHeight)
+                setscrollTopBeforeFetch(container.scrollTop)
 
                 propFetchNextPage().then(() => {
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            const newScrollHeight = container.scrollHeight
-                            const addedHeight = newScrollHeight - (scrollHeightBeforeFetch.current ?? newScrollHeight)
-                            container.scrollTop = (scrollTopBeforeFetch.current ?? 0) + addedHeight
-                            scrollHeightBeforeFetch.current = null
-                            scrollTopBeforeFetch.current = null
-                            // setTimeout(() => {
-                                isFetchingRef.current = false
-                            // }, 300)
-                        })
-                    })
+                    const newScrollHeight = container.scrollHeight
+                    const addedHeight = newScrollHeight - (scrollHeightBeforeFetch ?? newScrollHeight)
+                    container.scrollTop = (scrollTopBeforeFetch ?? 0) + addedHeight
                 })
             }
         }, { threshold: 0.1 })
@@ -70,7 +57,7 @@ export const AllProperties = () => {
         <div
             ref={scrollContainerRef}
             className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden"
-            style={{ overflowAnchor: "none" }}  // disable browser scroll anchoring — we handle it manually
+            style={{ overflowAnchor: "none" }}
         >
             <Table className="w-full table-fixed">
                 <TableCaption>Properties listed for sale.</TableCaption>
@@ -128,8 +115,7 @@ export const AllProperties = () => {
                 <p className="text-center text-sm text-gray-500 py-2">Loading more...</p>
             )}
 
-            {/* overflow-anchor: none stops the browser from anchoring to this sentinel */}
-            <div ref={contentBorder} className="h-1" style={{ overflowAnchor: "none" }} />
+            <div ref={contentBorder} className="h-1" />
         </div>
     )
 }
