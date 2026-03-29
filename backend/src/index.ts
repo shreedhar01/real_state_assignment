@@ -1,9 +1,11 @@
 import express, { type NextFunction, type Request, type Response } from "express"
 import { env } from "./config/env.js"
-import authRouter from "./api_v1/route/auth.route.js"
 import type { ApiError } from "./utils/apiError.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
+
+import authRouter from "./api_v1/route/auth.route.js"
+import propertyRouter from "./api_v1/route/property.route.js"
 
 const app = express()
 
@@ -24,6 +26,7 @@ app.get("/", (_, res) => {
 })
 
 app.use("/", authRouter)
+app.use("/property", propertyRouter)
 
 app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
     const statusCode = err.statusCode || 500
