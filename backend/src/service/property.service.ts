@@ -17,7 +17,8 @@ export const getAllPropertyService = async (page: number, limit: number, userId:
             fav: {
                 id: favourite.id,
                 property_id: favourite.propertyId,
-                user_id: favourite.userId
+                user_id: favourite.userId,
+                status: favourite.status
             },
             count: sql`count(*) over()`
         })
@@ -50,20 +51,38 @@ export const getAllPropertyService = async (page: number, limit: number, userId:
 }
 
 export const addFavouritePropertyService = async (propertyId: number, userId: number) => {
-    console.log(`userId : ${userId}, propertyId : ${propertyId}`)
+    // console.log(`userId : ${userId}, propertyId : ${propertyId}`)
     const [favAdded] = await db
         .insert(favourite)
         .values({
             userId,
-            propertyId
+            propertyId,
+            status: true
         })
         .returning({
             id: favourite.id,
             property_id: favourite.propertyId,
-            user_id: favourite.userId
+            user_id: favourite.userId,
+            status: favourite.status
         })
-    if(!favAdded){
-        throw new ApiError(500,"unable to add to favourite")
+    if (!favAdded) {
+        throw new ApiError(500, "unable to add to favourite")
     }
     return favAdded
+}
+
+export const removeFavouritePropertyService = async (favouriteId: number) => {
+    const [isRemove] = await db
+        .update(favourite)
+        .set({ status: false })
+        .where(
+            eq(favourite.id, favouriteId)
+        )
+        .returning({
+            id: favourite.id
+        })
+    if (!isRemove) {
+        throw new ApiError(500, "favourite not remove")
+    }
+    return isRemove
 }

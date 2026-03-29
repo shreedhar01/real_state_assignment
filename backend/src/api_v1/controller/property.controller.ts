@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
-import { addFavouritePropertyService, getAllPropertyService } from "../../service/property.service.js";
+import { addFavouritePropertyService, getAllPropertyService, removeFavouritePropertyService } from "../../service/property.service.js";
 import { ApiError } from "../../utils/apiError.js";
 
 export const getAllPropertyController = asyncHandler(async (req: Request, res: Response) => {
@@ -26,5 +26,16 @@ export const addFavouritePropertyController = asyncHandler(async (req: Request, 
     const fav = await addFavouritePropertyService(Number(id), req.user!.id)
     return res.status(200).json(
         new ApiResponse(200, [fav], "successfully added to favourite")
+    )
+})
+
+export const removeFavouritePropertyController = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.body
+    if (!id) {
+        throw new ApiError(401, "id not given")
+    }
+    const fav = await removeFavouritePropertyService(Number(id))
+    return res.status(200).json(
+        new ApiResponse(200, [fav], "successfully remove from favourite")
     )
 })
