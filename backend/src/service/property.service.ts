@@ -1,9 +1,9 @@
-import { sql } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { db } from "../db/index.js"
-import { property } from "../db/schema.js"
+import { favourite, property } from "../db/schema.js"
 import { ApiError } from "../utils/apiError.js"
 
-export const getAllPropertyService = async (page: number, limit: number) => {
+export const getAllPropertyService = async (page: number, limit: number, userId:number) => {
     const offset = (page - 1) * limit
     const allProperty = await db
         .select({
@@ -14,9 +14,18 @@ export const getAllPropertyService = async (page: number, limit: number) => {
             area: property.area,
             city: property.city,
             province: property.province,
+            fav: {
+                id: favourite.id,
+                property_id: favourite.propertyId,
+                user_id: favourite.userId
+            },
             count: sql`count(*) over()`
         })
         .from(property)
+        .leftJoin(favourite, and(
+            eq(favourite.propertyId,property.id),
+            eq(favourite.userId, userId)
+        ))
         .orderBy(property.price)
         .limit(limit)
         .offset(offset)
