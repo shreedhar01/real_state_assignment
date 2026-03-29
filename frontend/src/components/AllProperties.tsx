@@ -9,7 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import { useAddFavourite, useGetAllProperties } from "../lib/api/hooks/properties"
+import { useAddFavourite, useGetAllProperties, useRemoveFavourite } from "../lib/api/hooks/properties"
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 
@@ -66,6 +66,18 @@ export const AllProperties = () => {
         )
     }
 
+    const removeFavouriteMutation = useRemoveFavourite()
+    const handleRemoveFavourite = async (id: number) => {
+        toast.promise(
+            removeFavouriteMutation.mutateAsync(id),
+            {
+                loading: <b>Loading...</b>,
+                success: <b>Remove from favourite</b>,
+                error: <b>Unable to remove</b>
+            }
+        )
+    }
+
     return (
         <div
             ref={scrollContainerRef}
@@ -109,7 +121,10 @@ export const AllProperties = () => {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent side="left" >
                                                 <DropdownMenuGroup>
-                                                    <DropdownMenuItem className="flex items-center gap-x-2 hover:bg-red-500">
+                                                    <DropdownMenuItem 
+                                                    className="flex items-center gap-x-2 hover:bg-red-500"
+                                                    onClick={()=> handleRemoveFavourite(v.fav!.id)}
+                                                    >
                                                         <Trash2Icon />
                                                         Remove
                                                     </DropdownMenuItem>
