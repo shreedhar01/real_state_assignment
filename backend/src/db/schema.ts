@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+    boolean,
     index,
     integer,
     numeric,
@@ -40,7 +41,9 @@ export const property = pgTable("properties", {
 export const favourite = pgTable("favourite", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     userId: integer("user_id").references(() => user.id, { onDelete: "cascade" }).notNull(),
-    propertyId: integer("property_id").references(() => property.id, { onDelete: "cascade" }).notNull()
+    propertyId: integer("property_id").references(() => property.id, { onDelete: "cascade" }).notNull(),
+    status: boolean().default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow()
 }, (table) => [
     index("user_properties_idx").on(table.userId, table.propertyId),
     uniqueIndex("unique_user_properties_idx").on(table.userId, table.propertyId)
