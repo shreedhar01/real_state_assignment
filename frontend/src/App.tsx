@@ -10,18 +10,17 @@ export const App = () => {
   return (
     <ContextProviedr>
       <BrowserRouter>
-          <Header />
-        <Routes>
-
-          <Route element={<PublicRoute />}>
-            <Route path="/" element={<Home />} />
-          </Route>
-
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-
-        </Routes>
+        <Header />
+        <div className="pt-16">
+          <Routes>
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<Home />} />
+            </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+          </Routes>
+        </div>
       </BrowserRouter>
     </ContextProviedr>
   )
@@ -44,4 +43,5 @@ const ProtectedRoute = () => {
     <Spinner className=" size-20 " />
   </div>
   if (!data) return <Navigate to="/" replace />
+  return <Outlet />
 }

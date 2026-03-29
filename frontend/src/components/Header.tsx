@@ -26,19 +26,16 @@ export const Header = () => {
         }
     }
     return (
-        <div className="flex items-center justify-center">
-            <nav className="flex items-center justify-between py-4 px-2 w-full md:max-w-7xl border-b">
+        <div className="fixed top-0 left-0 w-full z-50 flex items-center justify-center bg-background border-b">
+            <nav className="flex items-center justify-between py-4 px-2 w-full md:max-w-7xl">
                 <p className="text-xl font-bold">Dream Land</p>
                 <div className={`${data ? "flex gap-2" : ""}`}>
                     <ModeToggle />
-                    {
-                        data ?
-                            <Button
-                                onClick={handleLogOut}
-                            >
-                                <LogOutIcon />
-                            </Button> : ""
-                    }
+                    {data && (
+                        <Button onClick={handleLogOut}>
+                            <LogOutIcon />
+                        </Button>
+                    )}
                 </div>
             </nav>
         </div>
