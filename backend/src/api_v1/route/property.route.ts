@@ -3,7 +3,7 @@ import {
     type Router as ExpressRouter
 } from "express";
 import { authentication } from "../middleware/auth.middleware.js";
-import { addFavouritePropertyController, getAllPropertyController, removeFavouritePropertyController } from "../controller/property.controller.js";
+import { addFavouritePropertyController, editFavouritePropertyController, getAllPropertyController, removeFavouritePropertyController } from "../controller/property.controller.js";
 
 
 const router: ExpressRouter = Router()
@@ -11,6 +11,7 @@ const router: ExpressRouter = Router()
 router.route("/").get(authentication, getAllPropertyController)
 router.route("/fav").post(authentication, addFavouritePropertyController)
 router.route("/remove").patch(authentication, removeFavouritePropertyController)
+router.route("/edit").patch(authentication, editFavouritePropertyController)
 
 
 

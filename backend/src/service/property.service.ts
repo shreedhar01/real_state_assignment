@@ -2,6 +2,7 @@ import { and, eq, sql } from "drizzle-orm"
 import { db } from "../db/index.js"
 import { favourite, property } from "../db/schema.js"
 import { ApiError } from "../utils/apiError.js"
+import type { EditFavouriteProperty } from "../schema/property.schema.js"
 
 export const getAllPropertyService = async (page: number, limit: number, userId: number) => {
     const offset = (page - 1) * limit
@@ -85,4 +86,50 @@ export const removeFavouritePropertyService = async (favouriteId: number) => {
         throw new ApiError(500, "favourite not remove")
     }
     return isRemove
+}
+
+
+export const editFavouritePropertyService = async (data: EditFavouriteProperty, userId: number) => {
+    const [isFavourite] = await db
+        .select({
+            id: favourite.id,
+            property_id: favourite.propertyId,
+            user_id: favourite.userId,
+            status: favourite.status
+        })
+        .from(favourite)
+        .where(and(
+            eq(favourite.userId, userId),
+            eq(favourite.propertyId, data.id)
+        ))
+    if (!isFavourite) {
+        throw new ApiError(404, "not favourite")
+    }
+
+    const [isRemove] = await db
+        .update(property)
+        .set({
+            title: data.title,
+            price: String(data.price),
+            description: data.description
+        })
+        .where(
+            eq(property.id, data.id)
+        )
+        .returning({
+            id: property.id,
+            title: property.title,
+            description: property.description,
+            price: property.price,
+            area: property.area,
+            city: property.city,
+            province: property.province,
+        })
+    if (!isRemove) {
+        throw new ApiError(500, "favourite not remove")
+    }
+    return {
+        ...isRemove,
+        fav: isFavourite
+    }
 }
