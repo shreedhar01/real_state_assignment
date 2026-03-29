@@ -3,7 +3,7 @@ import { db } from "../db/index.js"
 import { favourite, property } from "../db/schema.js"
 import { ApiError } from "../utils/apiError.js"
 
-export const getAllPropertyService = async (page: number, limit: number, userId:number) => {
+export const getAllPropertyService = async (page: number, limit: number, userId: number) => {
     const offset = (page - 1) * limit
     const allProperty = await db
         .select({
@@ -23,7 +23,7 @@ export const getAllPropertyService = async (page: number, limit: number, userId:
         })
         .from(property)
         .leftJoin(favourite, and(
-            eq(favourite.propertyId,property.id),
+            eq(favourite.propertyId, property.id),
             eq(favourite.userId, userId)
         ))
         .orderBy(property.price)
@@ -37,14 +37,33 @@ export const getAllPropertyService = async (page: number, limit: number, userId:
     const total = Number(allProperty[0]!.count)
 
     return {
-        data:allProperty.map(({count,...data})=> data),
-        pagination:{
+        data: allProperty.map(({ count, ...data }) => data),
+        pagination: {
             total,
             page,
             limit,
-            totalPages: Math.ceil(total/limit),
-            hasNext: page < Math.ceil(total/limit),
+            totalPages: Math.ceil(total / limit),
+            hasNext: page < Math.ceil(total / limit),
             hasPrev: page > 1
         }
     }
+}
+
+export const addFavouritePropertyService = async (propertyId: number, userId: number) => {
+    console.log(`userId : ${userId}, propertyId : ${propertyId}`)
+    const [favAdded] = await db
+        .insert(favourite)
+        .values({
+            userId,
+            propertyId
+        })
+        .returning({
+            id: favourite.id,
+            property_id: favourite.propertyId,
+            user_id: favourite.userId
+        })
+    if(!favAdded){
+        throw new ApiError(500,"unable to add to favourite")
+    }
+    return favAdded
 }
