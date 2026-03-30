@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
-import { addFavouritePropertyService, editFavouritePropertyService, getAllPropertyService, removeFavouritePropertyService } from "../../service/property.service.js";
+import { addFavouritePropertyService, editFavouritePropertyService, getAllPropertyService, getPropertyInfoByIdService, removeFavouritePropertyService } from "../../service/property.service.js";
 import { ApiError } from "../../utils/apiError.js";
 import { editFavouritePropertySchema } from "../../schema/property.schema.js";
 
@@ -53,5 +53,16 @@ export const editFavouritePropertyController = asyncHandler(async (req: Request,
     const isEdited = await editFavouritePropertyService(isValid.data, req.user!.id)
     return res.status(200).json(
         new ApiResponse(200, [isEdited], "successfully edit favourite property")
+    )
+})
+
+export const getPropertyInfoByIdController = asyncHandler(async (req: Request, res: Response) => {
+    const { propertyId } = req.query
+    if (!propertyId) {
+        throw new ApiError(401, "id not require to get info")
+    }
+    const info = await getPropertyInfoByIdService(Number(propertyId))
+    return res.status(200).json(
+        new ApiResponse(200, [info], "Property info fetch successfully")
     )
 })

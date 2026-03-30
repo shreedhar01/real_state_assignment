@@ -150,3 +150,25 @@ export const editFavouritePropertyService = async (data: EditFavouriteProperty, 
         fav: isFavourite
     }
 }
+
+export const getPropertyInfoByIdService = async (propertyId: number) => {
+    const [propertyData] = await db
+        .select({
+            id: property.id,
+            title: property.title,
+            description: property.description,
+            price: property.price,
+            area: property.area,
+            city: property.city,
+            province: property.province
+        })
+        .from(property)
+        .where(
+            eq(property.id, propertyId)
+        )
+    if(!propertyData){
+        throw new ApiError(404,"property not found")
+    }
+    
+    return propertyData
+}
