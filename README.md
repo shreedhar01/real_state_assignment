@@ -112,7 +112,7 @@ curl -X PATCH "http://localhost:8000/property/edit" \
     {
       id: number;
       name: string;
-      role: "buyer" | "agent" | "admin" | null;
+      role: "buyer" | "agent" | "admin";
     }
     ```
 
@@ -179,7 +179,7 @@ curl -X PATCH "http://localhost:8000/property/edit" \
 
 ```
 PORT=8000
-DATABASE_URL=require_if_running_Locally
+DATABASE_URL=require_if_not_using_docker
 SALT_ROUND=10
 JWT_TOKEN=466a00a3da828f8dcc494097aee87a06d6120eebc25d8c9808d96b88600e4997
 JWT_LIFE=86400000
@@ -194,6 +194,8 @@ VITE_API_URL=http://localhost:8000
 ---
 
 ## Running the Application
+Visit: http://localhost:5137 after using below methods.
+`only use below method after filling .env files`
 
 ### Using Docker
 
