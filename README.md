@@ -41,21 +41,21 @@ curl -X POST http://localhost:8000/signin \
 
 ```bash
 curl -X GET http://localhost:8000 \
-  -H "Cookie: your_cookie_name=your_cookie_value"
+  -H "Cookie: auth=your_cookie_value"
 ```
 
 ### Logout
 
 ```bash
 curl -X POST http://localhost:8000/logout \
-  -H "Cookie: your_cookie_name=your_cookie_value"
+  -H "Cookie: auth=your_cookie_value"
 ```
 
 ### Get All Properties
 
 ```bash
 curl -X GET "http://localhost:8000/property?page=1&limit=10" \
-  -H "Cookie: your_cookie_name=your_cookie_value"
+  -H "Cookie: auth=your_cookie_value"
 ```
 
 ### Add to Favourite
@@ -63,7 +63,7 @@ curl -X GET "http://localhost:8000/property?page=1&limit=10" \
 ```bash
 curl -X POST "http://localhost:8000/property/fav" \
   -H "Content-Type: application/json" \
-  -H "Cookie: your_cookie_name=your_cookie_value" \
+  -H "Cookie: auth=your_cookie_value" \
   -d '{"id":22}'
 ```
 
@@ -72,7 +72,7 @@ curl -X POST "http://localhost:8000/property/fav" \
 ```bash
 curl -X PATCH "http://localhost:8000/property/fav" \
   -H "Content-Type: application/json" \
-  -H "Cookie: your_cookie_name=your_cookie_value" \
+  -H "Cookie: auth=your_cookie_value" \
   -d '{"id":22}'
 ```
 
@@ -80,7 +80,7 @@ curl -X PATCH "http://localhost:8000/property/fav" \
 
 ```bash
 curl -X GET "http://localhost:8000/property/info?propertyId=1" \
-  -H "Cookie: your_cookie_name=your_cookie_value"
+  -H "Cookie: auth=your_cookie_value"
 ```
 
 ### Edit Property
@@ -88,7 +88,7 @@ curl -X GET "http://localhost:8000/property/info?propertyId=1" \
 ```bash
 curl -X PATCH "http://localhost:8000/property/edit" \
   -H "Content-Type: application/json" \
-  -H "Cookie: your_cookie_name=your_cookie_value" \
+  -H "Cookie: auth=your_cookie_value" \
   -d '{
     "id": "1",
     "title": "Spacious 3BHK House with Me",
