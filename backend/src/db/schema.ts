@@ -8,6 +8,7 @@ import {
     pgTable,
     text,
     timestamp,
+    unique,
     uniqueIndex,
     varchar
 } from "drizzle-orm/pg-core";
@@ -35,7 +36,9 @@ export const property = pgTable("properties", {
     city: varchar({ length: 255 }).notNull(),
     province: varchar({ length: 255 }).notNull(),
     createdAt: timestamp("created_at").defaultNow()
-})
+},(t) => [
+    unique().on(t.title, t.area, t.city)
+])
 
 
 export const favourite = pgTable("favourite", {

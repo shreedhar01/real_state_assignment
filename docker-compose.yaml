@@ -4,13 +4,13 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: BuyerPortel_Assignment
+      POSTGRES_DB: BuyerPortel_Assignment_v2
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d BuyerPortel_Assignment"]
+      test: ["CMD-SHELL", "pg_isready -U user -d BuyerPortel_Assignment_v2"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -21,7 +21,7 @@ services:
       - "8000:8000"
     env_file: ./backend/.env
     environment:
-      DATABASE_URL: postgresql://user:password@db1:5432/BuyerPortel_Assignment
+      DATABASE_URL: postgresql://user:password@db1:5432/BuyerPortel_Assignment_v2
     depends_on:
       db1:
         condition: service_healthy
@@ -38,6 +38,17 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+
+  seed:
+    build: ./backend
+    command:  sh -c "npm run db:generate && npm run db:migrate && npm run db:seed"
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://user:password@db1:5432/BuyerPortel_Assignment_v2
+    depends_on:
+      db1:
+        condition: service_healthy
+    restart: "no"
 
 volumes:
   postgres_data:

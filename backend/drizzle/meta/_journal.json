@@ -29,6 +29,13 @@
       "when": 1774794429826,
       "tag": "0003_daily_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774858408315,
+      "tag": "0004_exotic_azazel",
+      "breakpoints": true
     }
   ]
 }

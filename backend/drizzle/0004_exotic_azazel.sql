@@ -1,0 +1,1 @@
+ALTER TABLE "properties" ADD CONSTRAINT "properties_title_area_city_unique" UNIQUE("title","area","city");
