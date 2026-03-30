@@ -55,7 +55,7 @@ export function useRemoveFavourite() {
             const response = await api.patch("/property/remove", { id })
             return response.data.data[0]
         },
-        onSuccess: (data, id) => {
+        onSuccess: (_, id) => {
             queryClient.setQueryData<InfiniteData<PropertyResponse>>(['properties:get_all'], (old) => {
                 if (!old) return old
                 return {

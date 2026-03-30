@@ -12,7 +12,7 @@ import {
 import { useAddFavourite, useGetAllProperties, useRemoveFavourite } from "../lib/api/hooks/properties"
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 export const AllProperties = () => {
     const [scrollHeightBeforeFetch, setScrollHeightBeforeFetch] = useState<number | null>(null)
@@ -21,8 +21,6 @@ export const AllProperties = () => {
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const contentBorder = useRef<HTMLDivElement>(null)
     const isMobile = useIsMobile()
-
-    const navigate = useNavigate()
 
     const {
         data: propData,
