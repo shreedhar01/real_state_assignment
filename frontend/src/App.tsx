@@ -5,6 +5,7 @@ import { Dashboard } from "./pages/Dashboard"
 import { Header } from "./components/Header"
 import { useAuth } from "./provider/AuthProvider"
 import { Spinner } from "./components/ui/spinner"
+import { EditFavouriteProperty } from "./pages/Edit"
 
 export const App = () => {
   return (
@@ -18,6 +19,7 @@ export const App = () => {
             </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/:propertyId" element={<EditFavouriteProperty />} />
             </Route>
           </Routes>
         </div>

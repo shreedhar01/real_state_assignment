@@ -37,6 +37,6 @@ export const editFavouritePropertySchema = z.object({
     id: z.number(),
     title: z.string().min(3).max(255),
     price: z.number(),
-    description: z.string()
+    description: z.string().min(10)
 })
 export type EditFavouriteProperty = z.infer<typeof editFavouritePropertySchema>

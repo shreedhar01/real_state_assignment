@@ -1,6 +1,6 @@
-import { useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query"
 import { api } from "../axios"
-import type { Property, PropertyResponse } from "../../../schema/property.types"
+import type { EditFavouriteProperty, Property, PropertyResponse } from "../../../schema/property.types"
 
 export function useGetAllProperties() {
     return useInfiniteQuery({
@@ -68,6 +68,54 @@ export function useRemoveFavourite() {
                     }))
                 }
             })
+        }
+    })
+}
+
+export function useEditFavouriteProperty() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["property:edit"],
+        mutationFn: async (data: EditFavouriteProperty) => {
+            const response = await api.patch("/property/edit", data)
+            return response.data.data[0] as Property
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData<InfiniteData<PropertyResponse>>(["properties:get_all"], (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    pages: old.pages.map(page => ({
+                        ...page,
+                        data: page.data.map(val =>
+                            val.id === data.id ? data : val
+                        )
+                    }))
+                }
+            })
+
+            queryClient.setQueryData(["property:get_by_id", data.id], data)
+        }
+    })
+}
+
+export function useGetPropertyInfoById(propertyId: number) {
+    const queryClient = useQueryClient()
+    return useQuery({
+        queryKey: ["property:get_by_id", propertyId],
+        queryFn: async () => {
+
+            const infiniteData = queryClient.getQueryData<InfiniteData<PropertyResponse>>(['properties:get_all'])
+            if (infiniteData) {
+                const cacheProperty = infiniteData.pages.flatMap(v => v.data).find(prop => prop.id === propertyId)
+                if (cacheProperty) return cacheProperty
+            }
+
+            const response = await api.get("/property/info", {
+                params: { propertyId }
+            })
+            return response.data.data[0] as Property
         }
     })
 }
