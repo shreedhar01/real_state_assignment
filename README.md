@@ -194,7 +194,7 @@ VITE_API_URL=http://localhost:8000
 ---
 
 ## Running the Application
-Visit: http://localhost:5137 after using below methods.
+Visit: http://localhost:5173 after using below methods.
 `only use below method after filling .env files`
 
 ### Using Docker
